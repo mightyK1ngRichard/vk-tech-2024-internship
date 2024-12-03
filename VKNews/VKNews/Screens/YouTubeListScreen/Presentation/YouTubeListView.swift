@@ -13,10 +13,16 @@ struct YouTubeListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.snippets) { snippet in
-                        YouTubeSnippetView(snippet: snippet)
+                ForEach(viewModel.snippets) { snippet in
+                    LazyVStack {
+                        YouTubeSnippetView(snippet: snippet).onAppear {
+                            viewModel.loadMoreData(with: snippet)
+                        }
                     }
+                }
+
+                if viewModel.showMoreLoading {
+                    ProgressView()
                 }
             }
             .background(.bar)
