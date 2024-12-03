@@ -12,13 +12,18 @@ struct YouTubeListView: View {
 
     var body: some View {
         NavigationStack {
-            List(viewModel.snippets) { news in
-                Text(news.title)
+            ScrollView {
+                LazyVStack {
+                    ForEach(viewModel.snippets) { snippet in
+                        YouTubeSnippetView(snippet: snippet)
+                    }
+                }
             }
-            Button("Fetch") {
-                viewModel.fetchData()
-            }
+            .background(.bar)
+            .scrollIndicators(.hidden)
+            .navigationTitle("Christmas")
         }
+        .onAppear(perform: viewModel.fetchData)
     }
 }
 

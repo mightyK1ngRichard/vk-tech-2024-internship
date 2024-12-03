@@ -9,8 +9,8 @@ import UIKit
 
 struct YouTubeSnippetModel: Identifiable {
     let id: String
-    let title: String
-    let description: String
+    let title: String?
+    let description: String?
     let previewImage: UIImage?
     let publishedAt: String
     let channelTitle: String

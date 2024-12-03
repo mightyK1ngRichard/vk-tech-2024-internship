@@ -29,14 +29,14 @@ final class YouTubeListInteractor: YouTubeListInteractorProtocol {
 extension YouTubeListInteractor {
 
     func fetchSnippets(req: YouTubeSearchServiceRequest) {
-//        Task {
-//            do {
-//                let response = try await youTubeService.getYouTubeVideos(req: req)
-//                presenter?.presentSnippetsList(response: articles)
-//            } catch {
-//                Logger.log(kind: .error, message: error)
-//                presenter?.presentError(error: error)
-//            }
-//        }
+        Task {
+            do {
+                let response = try await youTubeService.getYouTubeVideos(req: req)
+                presenter?.presentSnippetsList(response: response)
+            } catch {
+                Logger.log(kind: .error, message: error)
+                presenter?.presentError(error: error)
+            }
+        }
     }
 }

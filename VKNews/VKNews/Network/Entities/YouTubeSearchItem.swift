@@ -16,7 +16,7 @@ struct YouTubeSearchItem: Decodable {
 // MARK: - SearchItemID
 
 struct SearchItemID: Decodable {
-    let videoId: String
+    let videoId: String?
 }
 
 // MARK: - SearchItemSnippet
@@ -26,7 +26,7 @@ struct SearchItemSnippet: Decodable {
     let channelId: String
     let title: String
     let description: String
-    let thumbnails: [SearchItemThumbnails]
+    let thumbnails: SearchItemThumbnails
     let channelTitle: String
 }
 

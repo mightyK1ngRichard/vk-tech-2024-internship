@@ -44,13 +44,14 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
 extension YouTubeListViewModel {
 
     func fetchData() {
-//        let request = NewsServiceRequest(
-//            apiKey: "5bb077a0181341b99bf6345c40f3b2d9",
-//            query: "python",
-//            page: "2",
-//            pageSize: "10"
-//        )
-//        interactor?.fetchNews(req: request)
+        let request = YouTubeSearchServiceRequest(
+            apiKey: "AIzaSyCKMoGNm795y7gcM2icFz39cbiadp0Ms70",
+            query: "christmas",
+            maxResults: "50",
+            // FIXME: Убрать хадкод
+            pageToken: "CDIQAA"
+        )
+        interactor?.fetchSnippets(req: request)
     }
 }
 

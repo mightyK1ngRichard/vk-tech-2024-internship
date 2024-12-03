@@ -8,7 +8,7 @@
 import Foundation
 
 enum YouTubeNetworkRouter: String {
-    static private var baseURLString = "https://www.googleapis.com/youtube/v3/search"
+    static private var baseURLString = "https://www.googleapis.com/youtube/v3"
 
     case search
 }

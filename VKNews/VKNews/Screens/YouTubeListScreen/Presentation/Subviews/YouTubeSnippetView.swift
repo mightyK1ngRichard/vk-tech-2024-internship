@@ -17,7 +17,7 @@ struct YouTubeSnippetView: View {
         }
         .padding(.vertical, 14)
         .padding(.horizontal)
-        .background(.white)
+        .background(Constants.bgColor, in: .rect(cornerRadius: 16))
     }
 }
 
@@ -27,44 +27,55 @@ private extension YouTubeSnippetView {
 
     var headerView: some View {
         HStack {
-            Image(.defaultAvatar)
+            Image(.person)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-                .frame(width: 42, height: 42)
-                .clipShape(.circle)
+                .frame(width: 24, height: 24)
+                .padding(10)
+                .background(.ultraThinMaterial, in: .circle)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(snippet.channelTitle)
                     .font(.system(size: 16, weight: .regular))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Constants.primaryTextColor)
 
                 Text(snippet.publishedAt)
                     .font(.system(size: 13, weight: .regular))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Constants.secondaryTextColor)
             }
         }
     }
 
     var contentView: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(snippet.title)
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.primary)
-
-            if let uiImage = snippet.previewImage {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 192)
-                    .clipShape(.rect(cornerRadius: 8))
-            } else {
-                RoundedRectangle(cornerRadius: 8)
-                    .frame(height: 192)
+            if let title = snippet.title {
+                Text(title)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(Constants.primaryTextColor)
             }
 
-            Text(snippet.description)
-                .font(.system(size: 14, weight: .regular))
-                .lineLimit(8)
+            previewImageView
+
+            if let description = snippet.description {
+                Text(description)
+                    .font(.system(size: 14, weight: .regular))
+                    .lineLimit(8)
+                    .foregroundStyle(Constants.primaryTextColor)
+            }
+        }
+    }
+
+    @ViewBuilder
+    var previewImageView: some View {
+        if let uiImage = snippet.previewImage {
+            Image(uiImage: uiImage)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(height: 192)
+                .clipShape(.rect(cornerRadius: 8))
+        } else {
+            RoundedRectangle(cornerRadius: 8)
+                .frame(height: 192)
         }
     }
 }
@@ -79,4 +90,15 @@ private extension YouTubeSnippetView {
         YouTubeSnippetView(snippet: .mockData)
     }
     .ignoresSafeArea()
+}
+
+// MARK: - Constants
+
+private extension YouTubeSnippetView {
+
+    enum Constants {
+        static let bgColor = VKColor<BackgroundPalette>.bgLightCharcoal.color
+        static let primaryTextColor = VKColor<TextPalette>.primary.color
+        static let secondaryTextColor = VKColor<TextPalette>.secondary.color
+    }
 }
