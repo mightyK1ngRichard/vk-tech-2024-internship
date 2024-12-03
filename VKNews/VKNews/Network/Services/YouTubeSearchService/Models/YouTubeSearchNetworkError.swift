@@ -1,5 +1,5 @@
 //
-//  NewsNetworkError.swift
+//  YouTubeSearchNetworkError.swift
 //  VKNews
 //
 //  Created by Dmitriy Permyakov on 03.12.2024.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-enum NewsNetworkError: Error {
+enum YouTubeSearchNetworkError: Error {
     case invalidURL
     case invalidHTTPResponse
 }
 
-extension NewsNetworkError {
+extension YouTubeSearchNetworkError {
 
     var errorDescription: String {
         switch self {

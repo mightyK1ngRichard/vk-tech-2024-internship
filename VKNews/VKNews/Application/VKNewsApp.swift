@@ -11,7 +11,7 @@ import SwiftUI
 struct VKNewsApp: App {
     var body: some Scene {
         WindowGroup {
-            NewsListView(viewModel: NewsListAssembly.shared.build())
+            YouTubeListView(viewModel: YouTubeListAssembly.shared.build())
         }
     }
 }
