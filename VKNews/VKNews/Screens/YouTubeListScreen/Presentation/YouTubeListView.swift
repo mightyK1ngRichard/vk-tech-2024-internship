@@ -1,5 +1,5 @@
 //
-//  NewsListView.swift
+//  YouTubeListView.swift
 //  VKNews
 //
 //  Created by Dmitriy Permyakov on 03.12.2024.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct NewsListView: View {
-    @State var viewModel: NewsListViewModelProtocol
+struct YouTubeListView: View {
+    @State var viewModel: YouTubeListViewModelProtocol
 
     var body: some View {
         NavigationStack {
-            List(viewModel.news) { news in
+            List(viewModel.snippets) { news in
                 Text(news.title)
             }
             Button("Fetch") {
@@ -25,9 +25,9 @@ struct NewsListView: View {
 // MARK: - Preview
 
 #Preview("Mockable") {
-    NewsListView(viewModel: NewsListViewModel.mockData)
+    YouTubeListView(viewModel: YouTubeListViewModelMock())
 }
 
 #Preview("Network") {
-    NewsListView(viewModel: NewsListAssembly.shared.build())
+    YouTubeListView(viewModel: YouTubeListAssembly.shared.build())
 }
