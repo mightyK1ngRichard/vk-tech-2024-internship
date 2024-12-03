@@ -25,8 +25,8 @@ extension YouTubeSnippetModel: Mockable {
         id: "-1",
         title: "ABS-CBN Christmas Station IDs (2009-2021) 🎄🎄",
         description: "I made this playlist dahil excited na ko sa CSID for 2022. Sarap lang i reminisce and i celebrate ang BerMonths listening to these ...",
-        previewImage: .actions,
-        publishedAt: "2022-10-15 02:28:57",
+        previewImage: .preview,
+        publishedAt: "12 нояб в 12:21",
         channelTitle: "NPL Buddy"
     )
 
