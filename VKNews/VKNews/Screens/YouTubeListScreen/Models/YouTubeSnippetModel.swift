@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct YouTubeSnippetModel: Identifiable {
+struct YouTubeSnippetModel: Identifiable, Equatable {
     let id: String
     let title: String?
     let description: String?
@@ -33,7 +33,7 @@ extension YouTubeSnippetModel: Mockable {
     static func generateMockModel(for id: String) -> YouTubeSnippetModel {
         YouTubeSnippetModel(
             id: id,
-            title: mockData.title,
+            title: "#\(id) - \(mockData.title ?? "without title")",
             description: mockData.description,
             previewImage: mockData.previewImage,
             publishedAt: mockData.publishedAt,

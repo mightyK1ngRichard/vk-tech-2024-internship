@@ -34,7 +34,7 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
                 channelTitle: item.snippet.channelTitle
             )
         }
-        viewModel?.showSnippets(snippets)
+        viewModel?.showSnippets(snippets, nextPageToken: response.nextPageToken)
     }
 
     func presentError(error: Error) {
