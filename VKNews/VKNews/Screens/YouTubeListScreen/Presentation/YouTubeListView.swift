@@ -33,6 +33,10 @@ struct YouTubeListView: View {
     YouTubeListView(viewModel: YouTubeListViewModelMock())
 }
 
+#Preview("Mockable Delay") {
+    YouTubeListView(viewModel: YouTubeListViewModelMock(delay: 2))
+}
+
 #Preview("Network") {
     YouTubeListView(viewModel: YouTubeListAssembly.shared.build())
 }

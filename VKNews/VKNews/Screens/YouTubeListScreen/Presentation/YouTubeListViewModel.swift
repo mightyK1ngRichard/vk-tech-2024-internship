@@ -11,6 +11,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     // Values
     var snippets: [YouTubeSnippetModel] { get }
     var errorMessage: String? { get }
+    var showLoading: Bool { get }
     // Network
     func fetchData()
     // Display Data
@@ -26,6 +27,7 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
     var interactor: YouTubeListInteractorProtocol?
 
     private(set) var snippets: [YouTubeSnippetModel] = []
+    private(set) var showLoading = false
     private(set) var errorMessage: String?
 
     init(
