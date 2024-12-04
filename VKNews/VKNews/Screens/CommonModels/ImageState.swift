@@ -5,10 +5,10 @@
 //  Created by Dmitriy Permyakov on 04.12.2024.
 //
 
-import UIKit
+import Foundation
 
-enum ImageState: Hashable {
+enum ImageState: Hashable, Equatable {
     case loading
     case none
-    case uiImage(UIImage)
+    case data(Data)
 }

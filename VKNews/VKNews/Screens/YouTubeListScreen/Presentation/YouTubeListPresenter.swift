@@ -6,11 +6,10 @@
 //
 
 import Foundation
-import UIKit
 
 protocol YouTubeListPresenterProtocol: AnyObject {
     func presentSnippetsList(response: YouTubeSearchResponseEntity)
-    func addImageIntoSnippet(snippetID: String, image: UIImage)
+    func addImageIntoSnippet(snippetID: String, imageData: Data)
     func presentError(error: Error)
 }
 
@@ -30,7 +29,7 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
                 id: id,
                 title: item.snippet.title.isEmpty ? nil : item.snippet.title,
                 description: item.snippet.description.isEmpty ? nil : item.snippet.description,
-                // Картинки будут добавляеться далее через стриминг
+                // Данные об изображении уставновим в конкурентной очереди
                 previewImageState: .loading,
                 publishedAt: item.snippet.publishedAt.formatDate ?? "",
                 channelTitle: item.snippet.channelTitle
@@ -39,8 +38,8 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
         viewModel?.showSnippets(snippets, nextPageToken: response.nextPageToken)
     }
 
-    func addImageIntoSnippet(snippetID: String, image: UIImage) {
-        viewModel?.insertImageInSnippet(snippetID: snippetID, image: image)
+    func addImageIntoSnippet(snippetID: String, imageData: Data) {
+        viewModel?.insertImageInSnippet(snippetID: snippetID, imageData: imageData)
     }
 
     func presentError(error: Error) {

@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct VKNewsApp: App {
+    init() {
+        Logger.log(message: URL.applicationSupportDirectory.path(percentEncoded: false))
+    }
+
     var body: some Scene {
         WindowGroup {
             YouTubeListView(viewModel: YouTubeListAssembly.shared.build())
         }
+        .modelContainer(for: SDYouTubeSnippetModel.self)
     }
 }

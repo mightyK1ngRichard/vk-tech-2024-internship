@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import UIKit
 import Observation
+import SwiftData
 
 protocol YouTubeListViewModelProtocol: AnyObject {
     // Values
@@ -21,7 +21,9 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     // Display Data
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?)
     func showError(errorMessage: String)
-    func insertImageInSnippet(snippetID: String, image: UIImage)
+    func insertImageInSnippet(snippetID: String, imageData: Data)
+    // Setters
+    func setModelContext(modelContext: ModelContext)
 }
 
 // MARK: - YouTubeListViewModel
@@ -82,7 +84,7 @@ extension YouTubeListViewModel {
     }
 
     func loadMoreData(with snippet: YouTubeSnippetModel) {
-        guard snippet == lastSnippet else { return }
+        guard snippet.id == lastSnippet?.id else { return }
         showMoreLoading = true
         fetchData()
     }
@@ -108,12 +110,14 @@ extension YouTubeListViewModel {
         }
     }
 
-    func insertImageInSnippet(snippetID: String, image: UIImage) {
+    func insertImageInSnippet(snippetID: String, imageData: Data) {
         guard let index = snippets.firstIndex(where: { $0.id == snippetID }) else {
             return
         }
         DispatchQueue.main.async {
-            self.snippets[index].previewImageState = .uiImage(image)
+            self.snippets[index].previewImageState = .data(imageData)
+            // Обновляем изображение в хранилище
+            self.interactor?.insertImageInSnippet(snippetID: self.snippets[index].id, imageData: imageData)
         }
     }
 
@@ -123,5 +127,9 @@ extension YouTubeListViewModel {
         var seen = Set(snippets)
         let uniqueSnippets = newSnippets.filter { seen.insert($0).inserted }
         snippets.append(contentsOf: uniqueSnippets)
+    }
+
+    func setModelContext(modelContext: ModelContext)  {
+        interactor?.setModelContext(modelContext: modelContext)
     }
 }
