@@ -7,13 +7,6 @@
 
 import UIKit
 
-// FIXME: Перенести
-enum ImageState: Hashable {
-    case loading
-    case none
-    case uiImage(UIImage)
-}
-
 struct YouTubeSnippetModel: Identifiable, Hashable, Equatable {
     let id: String
     let title: String?
