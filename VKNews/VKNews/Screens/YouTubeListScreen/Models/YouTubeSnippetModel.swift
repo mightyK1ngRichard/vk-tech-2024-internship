@@ -7,13 +7,26 @@
 
 import UIKit
 
-struct YouTubeSnippetModel: Identifiable, Equatable {
+struct YouTubeSnippetModel: Identifiable, Hashable, Equatable {
     let id: String
     let title: String?
     let description: String?
-    let previewImage: UIImage?
+    var previewImageState: ImageState
     let publishedAt: String
     let channelTitle: String
+}
+
+// MARK: - Equatable
+
+extension YouTubeSnippetModel {
+
+    static func == (lhs: YouTubeSnippetModel, rhs: YouTubeSnippetModel) -> Bool {
+        lhs.id == rhs.id
+        && lhs.title == rhs.title
+        && lhs.description == rhs.description
+        && lhs.publishedAt == rhs.publishedAt
+        && lhs.channelTitle == rhs.channelTitle
+    }
 }
 
 // MARK: - Mockable
@@ -25,7 +38,7 @@ extension YouTubeSnippetModel: Mockable {
         id: "-1",
         title: "ABS-CBN Christmas Station IDs (2009-2021) 🎄🎄",
         description: "I made this playlist dahil excited na ko sa CSID for 2022. Sarap lang i reminisce and i celebrate ang BerMonths listening to these ...",
-        previewImage: .preview,
+        previewImageState: .uiImage(.preview),
         publishedAt: "12 нояб в 12:21",
         channelTitle: "NPL Buddy"
     )
@@ -35,7 +48,7 @@ extension YouTubeSnippetModel: Mockable {
             id: id,
             title: "#\(id) - \(mockData.title ?? "without title")",
             description: mockData.description,
-            previewImage: mockData.previewImage,
+            previewImageState: mockData.previewImageState,
             publishedAt: mockData.publishedAt,
             channelTitle: mockData.channelTitle
         )

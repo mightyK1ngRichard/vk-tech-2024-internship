@@ -13,7 +13,7 @@ struct YouTubeListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                ForEach(viewModel.snippets) { snippet in
+                ForEach(viewModel.snippets, id: \.hashValue) { snippet in
                     LazyVStack {
                         YouTubeSnippetView(snippet: snippet).onAppear {
                             viewModel.loadMoreData(with: snippet)

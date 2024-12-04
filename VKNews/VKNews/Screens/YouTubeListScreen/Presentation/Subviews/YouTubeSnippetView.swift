@@ -67,15 +67,20 @@ private extension YouTubeSnippetView {
 
     @ViewBuilder
     var previewImageView: some View {
-        if let uiImage = snippet.previewImage {
+        switch snippet.previewImageState {
+        case .loading:
+            RoundedRectangle(cornerRadius: 8)
+                .frame(height: 192)
+        case .none:
+            RoundedRectangle(cornerRadius: 8)
+                .fill(.red)
+                .frame(height: 192)
+        case let .uiImage(uiImage):
             Image(uiImage: uiImage)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(height: 192)
                 .clipShape(.rect(cornerRadius: 8))
-        } else {
-            RoundedRectangle(cornerRadius: 8)
-                .frame(height: 192)
         }
     }
 }

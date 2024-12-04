@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import Observation
 
 protocol YouTubeListViewModelProtocol: AnyObject {
@@ -20,6 +21,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     // Display Data
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?)
     func showError(errorMessage: String)
+    func insertImageInSnippet(snippetID: String, image: UIImage)
 }
 
 // MARK: - YouTubeListViewModel
@@ -30,7 +32,7 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
     var interactor: YouTubeListInteractorProtocol?
     
     /// Фрагменты видео
-    private(set) var snippets: [YouTubeSnippetModel] = []
+    private(set) var snippets: [YouTubeSnippetModel]
     /// Флаг показа стартовой загрузки
     private(set) var showLoading: Bool
     /// Флаг показа индикатора загрузки при бесконечном скролле
@@ -71,7 +73,7 @@ extension YouTubeListViewModel {
         }
 
         let request = YouTubeSearchServiceRequest(
-            apiKey: "AIzaSyCKMoGNm795y7gcM2icFz39cbiadp0Ms70",
+            apiKey: "AIzaSyC2DwwcK4818kCF7gnTrCu9HS54EOcVn8Y",
             query: "christmas",
             maxResults: "10",
             pageToken: nextPageToken
@@ -92,7 +94,7 @@ extension YouTubeListViewModel {
 
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {
         DispatchQueue.main.async {
-            self.snippets.append(contentsOf: data)
+            self.mergeSnippets(newSnippets: data)
             self.nextPageToken = nextPageToken
             self.lastSnippet = data.last
             self.showLoading = false
@@ -104,5 +106,22 @@ extension YouTubeListViewModel {
         DispatchQueue.main.async {
             self.errorMessage = errorMessage
         }
+    }
+
+    func insertImageInSnippet(snippetID: String, image: UIImage) {
+        guard let index = snippets.firstIndex(where: { $0.id == snippetID }) else {
+            return
+        }
+        DispatchQueue.main.async {
+            self.snippets[index].previewImageState = .uiImage(image)
+        }
+    }
+
+    /// Добавляем уникальные сниппеты в конец массива
+    /// - Parameter newSnippets: Новые сниппеты
+    private func mergeSnippets(newSnippets: [YouTubeSnippetModel]) {
+        var seen = Set(snippets)
+        let uniqueSnippets = newSnippets.filter { seen.insert($0).inserted }
+        snippets.append(contentsOf: uniqueSnippets)
     }
 }
