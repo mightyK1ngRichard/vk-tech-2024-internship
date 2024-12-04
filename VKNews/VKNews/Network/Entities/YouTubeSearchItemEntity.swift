@@ -9,8 +9,8 @@ import Foundation
 
 struct YouTubeSearchItemEntity: Decodable {
     let etag: String
-    let id: SearchItemID
-    let snippet: SearchItemSnippetEntity
+    let id: SearchItemID?
+    let snippet: SearchItemSnippetEntity?
 }
 
 // MARK: - SearchItemID
@@ -22,25 +22,25 @@ struct SearchItemID: Decodable {
 // MARK: - SearchItemSnippetEntity
 
 struct SearchItemSnippetEntity: Decodable {
-    let publishedAt: String
-    let channelId: String
-    let title: String
-    let description: String
-    let thumbnails: SearchItemThumbnails
-    let channelTitle: String
+    let publishedAt: String?
+    let channelId: String?
+    let title: String?
+    let description: String?
+    let thumbnails: SearchItemThumbnails?
+    let channelTitle: String?
 }
 
 // MARK: - SearchItemThumbnails
 
 struct SearchItemThumbnails: Decodable {
-    let high: ThumbnailsData
+    let high: ThumbnailsData?
 }
 
 extension SearchItemThumbnails {
 
     struct ThumbnailsData: Decodable {
-        let url: String
-        let width: Int
-        let height: Int
+        let url: String?
+        let width: Int?
+        let height: Int?
     }
 }

@@ -41,6 +41,10 @@ final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
 
 extension YouTubeListViewModelMock {
 
+    func onAppear() {
+        fetchData()
+    }
+
     func fetchData() {
         showLoading = true
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -76,6 +80,14 @@ extension YouTubeListViewModelMock {
     func insertImageInSnippet(snippetID: String, imageData: Data) {}
 
     func setModelContext(modelContext: ModelContext) {}
+
+    func didTapSnippetCard(snippet: YouTubeSnippetModel) {}
+
+    func setCoordinator(with coordinator: Coordinator) {}
+
+    func addSnippetsFromMemory(_ data: [YouTubeSnippetModel]) {}
+
+    func didEditSnippet(snippet: YouTubeSnippetModel) {}
 }
 
 #endif

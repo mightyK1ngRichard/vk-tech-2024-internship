@@ -14,6 +14,7 @@ struct YouTubeSnippetModel: Identifiable, Hashable, Equatable {
     var previewImageState: ImageState
     let publishedAt: String
     let channelTitle: String
+    var getFromMemory = false
 }
 
 // MARK: - Equatable
@@ -27,6 +28,7 @@ extension YouTubeSnippetModel {
         && lhs.publishedAt == rhs.publishedAt
         && lhs.channelTitle == rhs.channelTitle
         && lhs.previewImageState == rhs.previewImageState
+        && lhs.getFromMemory == rhs.getFromMemory
     }
 }
 
@@ -41,7 +43,8 @@ extension YouTubeSnippetModel: Mockable {
         description: "I made this playlist dahil excited na ko sa CSID for 2022. Sarap lang i reminisce and i celebrate ang BerMonths listening to these ...",
         previewImageState: .data(UIImage.preview.pngData() ?? Data()),
         publishedAt: "12 нояб в 12:21",
-        channelTitle: "NPL Buddy"
+        channelTitle: "NPL Buddy",
+        getFromMemory: true
     )
 
     static func generateMockModel(for id: String) -> YouTubeSnippetModel {

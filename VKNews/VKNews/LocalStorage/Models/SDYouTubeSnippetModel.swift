@@ -45,8 +45,9 @@ extension YouTubeSnippetModel {
         id = sdModel._id
         title = sdModel._title
         description = sdModel._descriptionInfo
-        publishedAt = sdModel._publishedAt
+        publishedAt = sdModel._publishedAt.formatDate
         channelTitle = sdModel._channelTitle
+        getFromMemory = true
         if let data = sdModel._previewImageData {
             previewImageState = .data(data)
         } else {

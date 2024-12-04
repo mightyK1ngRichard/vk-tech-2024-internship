@@ -16,7 +16,8 @@ final class YouTubeListAssembly {
         let imageLoaderService = ImageLoaderService()
         let presenter = YouTubeListPresenter()
         let interactor = YouTubeListInteractor(presenter: presenter, youTubeService: youTubeService, imageLoaderService: imageLoaderService)
-        let viewModel = YouTubeListViewModel(interactor: interactor)
+        let router = YouTubeListRouter()
+        let viewModel = YouTubeListViewModel(interactor: interactor, router: router)
         presenter.viewModel = viewModel
 
         return viewModel

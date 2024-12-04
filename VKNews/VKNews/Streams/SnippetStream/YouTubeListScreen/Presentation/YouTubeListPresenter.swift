@@ -11,6 +11,7 @@ protocol YouTubeListPresenterProtocol: AnyObject {
     func presentSnippetsList(response: YouTubeSearchResponseEntity)
     func addImageIntoSnippet(snippetID: String, imageData: Data)
     func presentError(error: Error)
+    func getSnippetsFromMemory(snippets: [SDYouTubeSnippetModel])
 }
 
 // MARK: - YouTubeListPresenter
@@ -21,18 +22,21 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
 
     func presentSnippetsList(response: YouTubeSearchResponseEntity) {
         let snippets: [YouTubeSnippetModel] = response.items.compactMap { item in
-            guard let id = item.id.videoId else {
+            guard
+                let id = item.id?.videoId,
+                let snippet = item.snippet
+            else {
                 return nil
             }
 
             return YouTubeSnippetModel(
                 id: id,
-                title: item.snippet.title.isEmpty ? nil : item.snippet.title,
-                description: item.snippet.description.isEmpty ? nil : item.snippet.description,
+                title: snippet.title.isEmptyOrNil ? nil : snippet.title,
+                description: snippet.description.isEmptyOrNil ? nil : snippet.description,
                 // Данные об изображении уставновим в конкурентной очереди
                 previewImageState: .loading,
-                publishedAt: item.snippet.publishedAt.formatDate ?? "",
-                channelTitle: item.snippet.channelTitle
+                publishedAt: snippet.publishedAt?.formatDate ?? "",
+                channelTitle: snippet.channelTitle ?? ""
             )
         }
         viewModel?.showSnippets(snippets, nextPageToken: response.nextPageToken)
@@ -40,6 +44,13 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
 
     func addImageIntoSnippet(snippetID: String, imageData: Data) {
         viewModel?.insertImageInSnippet(snippetID: snippetID, imageData: imageData)
+    }
+
+    func getSnippetsFromMemory(snippets: [SDYouTubeSnippetModel]) {
+        let models = snippets.map { sdSnippet in
+            YouTubeSnippetModel(sdModel: sdSnippet)
+        }
+        viewModel?.addSnippetsFromMemory(models)
     }
 
     func presentError(error: Error) {

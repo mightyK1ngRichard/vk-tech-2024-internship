@@ -43,6 +43,15 @@ private extension YouTubeSnippetView {
                     .font(.system(size: 13, weight: .regular))
                     .foregroundStyle(Constants.secondaryTextColor)
             }
+            Spacer()
+
+            if snippet.getFromMemory {
+                VKBadge(text: "Saved")
+                    .padding(.trailing, 3)
+            }
+
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -65,27 +74,8 @@ private extension YouTubeSnippetView {
         }
     }
 
-    @ViewBuilder
     var previewImageView: some View {
-        switch snippet.previewImageState {
-        case .loading:
-            RoundedRectangle(cornerRadius: 8)
-                .frame(height: 192)
-        case .none:
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.red)
-                .frame(height: 192)
-        case let .data(imageData):
-            if let uiImage = UIImage(data: imageData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 192)
-                    .clipShape(.rect(cornerRadius: 8))
-            } else {
-                // TODO: Ошибка
-            }
-        }
+        VKPreviewImageView(imageState: snippet.previewImageState)
     }
 }
 

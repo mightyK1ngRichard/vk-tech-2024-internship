@@ -14,6 +14,7 @@ protocol YouTubeListInteractorProtocol: AnyObject {
     func fetchSnippets(req: YouTubeSearchServiceRequest)
     // Memory
     func setModelContext(modelContext: ModelContext)
+    func fetchMemorySnippets()
     func saveOnDeviceMemory(entities: [YouTubeSearchItemEntity]) throws
     func insertImageInSnippet(snippetID: String, imageData: Data)
 }
@@ -50,17 +51,17 @@ extension YouTubeListInteractor {
                 let response = try await getSnippets(req: req)
                 presenter?.presentSnippetsList(response: response)
 
-                // Получаем изображения снипетов
-                let stream = try await startLoadingImages(response.items)
-                for try await (snippetID, imageData) in stream {
-                    presenter?.addImageIntoSnippet(snippetID: snippetID, imageData: imageData)
-                }
-
                 // Кэшируем
                 do {
                     try saveOnDeviceMemory(entities: response.items)
                 } catch {
                     Logger.log(kind: .error, message: error.localizedDescription)
+                }
+
+                // Получаем изображения снипетов
+                let stream = try await startLoadingImages(response.items)
+                for try await (snippetID, imageData) in stream {
+                    presenter?.addImageIntoSnippet(snippetID: snippetID, imageData: imageData)
                 }
             } catch {
                 Logger.log(kind: .error, message: error)
@@ -70,21 +71,31 @@ extension YouTubeListInteractor {
         }
     }
     
+    /// Достаём данные из устройства
+    func fetchMemorySnippets() {
+        let descriptor = FetchDescriptor<SDYouTubeSnippetModel>()
+        let results = (try? modelContext?.fetch(descriptor)) ?? []
+        presenter?.getSnippetsFromMemory(snippets: results)
+    }
+
     /// Записываем сниппет в хранилище устройства без изображения
     /// - Parameter entities: Сетевые данные о сниппете
     func saveOnDeviceMemory(entities: [YouTubeSearchItemEntity]) throws {
         guard let modelContext else { throw InteractorError.noContextModel }
 
         for entity in entities {
-            guard let id = entity.id.videoId else { continue }
+            guard
+                let id = entity.id?.videoId,
+                let snippet = entity.snippet
+            else { continue }
             let model = SDYouTubeSnippetModel(
                 id: id,
-                title: entity.snippet.title,
-                description: entity.snippet.description,
+                title: snippet.title,
+                description: snippet.description,
                 // Изображение будем кэщировать при его получении
                 previewImageData: nil,
-                publishedAt: entity.snippet.publishedAt,
-                channelTitle: entity.snippet.channelTitle
+                publishedAt: snippet.publishedAt ?? "",
+                channelTitle: snippet.channelTitle ?? ""
             )
             if !model.isSaved(context: modelContext) {
                 modelContext.insert(model)
@@ -115,6 +126,7 @@ extension YouTubeListInteractor {
     }
 
     func setModelContext(modelContext: ModelContext) {
+        guard self.modelContext == nil else { return }
         self.modelContext = modelContext
     }
 }
@@ -132,10 +144,11 @@ private extension YouTubeListInteractor {
     ) async throws -> AsyncThrowingStream<(id: String, imageData: Data), Error> {
         let imagesWithIDs: [(id: String, url: URL)] = snippets.compactMap {
             guard
-                let id = $0.id.videoId,
-                let url = URL(string: $0.snippet.thumbnails.high.url)
+                let id = $0.id?.videoId,
+                let stringURL = $0.snippet?.thumbnails?.high?.url,
+                let url = URL(string: stringURL)
             else {
-                Logger.log(kind: .error, message: "Для \($0.snippet.title) не найден ID")
+                Logger.log(kind: .error, message: "Для \($0.snippet?.title ?? "no title") не найден ID")
                 return nil
             }
             return (id: id, url: url)
