@@ -5,9 +5,10 @@
 //  Created by Dmitriy Permyakov on 03.12.2024.
 //
 
-import Foundation
-
 #if DEBUG
+
+import Foundation
+import UIKit
 
 @Observable
 final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
@@ -51,10 +52,6 @@ extension YouTubeListViewModelMock {
         }
     }
 
-    func showError(errorMessage: String) {}
-
-    func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {}
-
     func loadMoreData(with snippet: YouTubeSnippetModel) {
         guard snippet == lastSnippet else { return }
         showMoreLoading = true
@@ -70,6 +67,12 @@ extension YouTubeListViewModelMock {
             self.showMoreLoading = false
         }
     }
+
+    func showError(errorMessage: String) {}
+
+    func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {}
+
+    func insertImageInSnippet(snippetID: String, image: UIImage) {}
 }
 
 #endif

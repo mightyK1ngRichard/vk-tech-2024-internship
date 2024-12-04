@@ -1,5 +1,5 @@
 //
-//  YouTubeSearchItem.swift
+//  YouTubeSearchItemEntity.swift
 //  VKNews
 //
 //  Created by Dmitriy Permyakov on 03.12.2024.
@@ -7,10 +7,10 @@
 
 import Foundation
 
-struct YouTubeSearchItem: Decodable {
+struct YouTubeSearchItemEntity: Decodable {
     let etag: String
     let id: SearchItemID
-    let snippet: SearchItemSnippet
+    let snippet: SearchItemSnippetEntity
 }
 
 // MARK: - SearchItemID
@@ -19,9 +19,9 @@ struct SearchItemID: Decodable {
     let videoId: String?
 }
 
-// MARK: - SearchItemSnippet
+// MARK: - SearchItemSnippetEntity
 
-struct SearchItemSnippet: Decodable {
+struct SearchItemSnippetEntity: Decodable {
     let publishedAt: String
     let channelId: String
     let title: String

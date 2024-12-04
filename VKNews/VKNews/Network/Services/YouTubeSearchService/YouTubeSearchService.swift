@@ -8,7 +8,7 @@
 import Foundation
 
 protocol YouTubeSearchServiceProtocol {
-    func getYouTubeVideos(req: YouTubeSearchServiceRequest) async throws -> YouTubeSearchResponse
+    func getYouTubeVideos(req: YouTubeSearchServiceRequest) async throws -> YouTubeSearchResponseEntity
 }
 
 final class YouTubeSearchService: YouTubeSearchServiceProtocol {
@@ -26,7 +26,7 @@ final class YouTubeSearchService: YouTubeSearchServiceProtocol {
 
 extension YouTubeSearchService {
 
-    func getYouTubeVideos(req: YouTubeSearchServiceRequest) async throws -> YouTubeSearchResponse {
+    func getYouTubeVideos(req: YouTubeSearchServiceRequest) async throws -> YouTubeSearchResponseEntity {
         guard
             let url = router.buildURL(apiKey: req.apiKey, query: req.query, maxResults: req.maxResults, pageToken: req.pageToken)
         else {
@@ -43,7 +43,7 @@ extension YouTubeSearchService {
             throw YouTubeSearchNetworkError.invalidHTTPResponse
         }
 
-        let youTubeSearchResponse = try JSONDecoder().decode(YouTubeSearchResponse.self, from: data)
+        let youTubeSearchResponse = try JSONDecoder().decode(YouTubeSearchResponseEntity.self, from: data)
         return youTubeSearchResponse
     }
 }
