@@ -115,6 +115,7 @@ extension YouTubeListInteractor {
     }
 
     func setModelContext(modelContext: ModelContext) {
+        guard self.modelContext == nil else { return }
         self.modelContext = modelContext
     }
 }

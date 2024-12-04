@@ -36,18 +36,33 @@ final class VKColor<Palette: Hashable> {
 
 enum TextPalette: Hashable {}
 enum BackgroundPalette: Hashable {}
+enum SeparatorPalette: Hashable {}
 
 // MARK: - TextPalette
 
 extension VKColor where Palette == TextPalette {
 
-    static var primary = VKColor(hexLight: 0x000000, hexDark: 0xFEFEFE)
-    static var secondary = VKColor(uiColor: .secondaryLabel)
+    static let primary = VKColor(hexLight: 0x000000, hexDark: 0xFEFEFE)
+    static let primaryInverte = VKColor(hexLight: 0xFFFFFF, hexDark: 0x2C2D2E)
+    static let secondary = VKColor(uiColor: .secondaryLabel)
 }
 
 // MARK: - BackgroundPalette
 
 extension VKColor where Palette == BackgroundPalette {
+    
+    /// Светлое тёмное
+    static let bgLightCharcoal = VKColor(hexLight: 0xFFFFFF, hexDark: 0x202020)
+    /// Цвет фона кнопки
+    static let bgButton = VKColor(hexLight: 0x2D81E0, hexDark: 0xFFFFFF)
+    /// Цвет шиммера
+    static let bgShimmering = VKColor(hexLight: 0xF3F3F7, hexDark: 0x242429)
+}
 
-    static var bgLightCharcoal = VKColor(hexLight: 0xFFFFFF, hexDark: 0x202020)
+// MARK: - SeparatorPalette
+
+extension VKColor where Palette == SeparatorPalette {
+
+    static let primaryInverse = VKColor(hexLight: 0xFEFEFE, hexDark: 0x000000)
+    static let inlineButton = VKColor(hexLight: 0x2688EB, hexDark: 0xFFFFFF)
 }

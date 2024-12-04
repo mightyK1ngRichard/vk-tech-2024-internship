@@ -23,7 +23,7 @@ struct YouTubeListView: View {
                 }
 
                 if viewModel.showMoreLoading {
-                    ProgressView()
+                    ProgressView().padding()
                 }
             }
             .background(.bar)
