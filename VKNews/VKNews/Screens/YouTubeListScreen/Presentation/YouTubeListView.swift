@@ -9,6 +9,7 @@ import SwiftUI
 
 struct YouTubeListView: View {
     @State var viewModel: YouTubeListViewModelProtocol
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -29,7 +30,10 @@ struct YouTubeListView: View {
             .scrollIndicators(.hidden)
             .navigationTitle("Christmas")
         }
-        .onAppear(perform: viewModel.fetchData)
+        .onAppear {
+            viewModel.setModelContext(modelContext: modelContext)
+            viewModel.fetchData()
+        }
     }
 }
 

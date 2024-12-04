@@ -75,12 +75,16 @@ private extension YouTubeSnippetView {
             RoundedRectangle(cornerRadius: 8)
                 .fill(.red)
                 .frame(height: 192)
-        case let .uiImage(uiImage):
-            Image(uiImage: uiImage)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(height: 192)
-                .clipShape(.rect(cornerRadius: 8))
+        case let .data(imageData):
+            if let uiImage = UIImage(data: imageData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: 192)
+                    .clipShape(.rect(cornerRadius: 8))
+            } else {
+                // TODO: Ошибка
+            }
         }
     }
 }

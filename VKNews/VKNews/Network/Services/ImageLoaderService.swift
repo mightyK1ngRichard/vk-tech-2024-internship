@@ -5,46 +5,46 @@
 //  Created by Dmitriy Permyakov on 04.12.2024.
 //
 
-import UIKit
+import Foundation
 
 // MARK: - ImageLoaderError
 
 enum ImageLoaderError: Error {
-    case incorrectImageData
     case emptyResult
 }
 
 // MARK: - ImageLoaderProtocol
 
 protocol ImageLoaderServiceProtocol: Sendable {
-    func loadImage(from url: URL) async throws -> UIImage
-    func loadImages(from urls: [URL]) async throws -> AsyncThrowingStream<UIImage, Error>
-    func loadImages(from urls: [(id: String, url: URL)]) async throws -> AsyncThrowingStream<(id: String, image: UIImage), Error>
+    func loadImage(from url: URL) async throws -> Data
+    func loadImages(from urls: [URL]) async throws -> AsyncThrowingStream<Data, Error>
+    func loadImages(from urls: [(id: String, url: URL)]) async throws -> AsyncThrowingStream<(id: String, imageData: Data), Error>
 }
 
 // MARK: - ImageLoaderService
 
 final class ImageLoaderService: ImageLoaderServiceProtocol {
-    typealias ImageWithID = (id: String, image: UIImage)
+    typealias ImageDataWithID = (id: String, imageData: Data)
 
-    func loadImage(from url: URL) async throws -> UIImage {
+    func loadImage(from url: URL) async throws -> Data {
         let request = URLRequest(url: url, timeoutInterval: 1)
         let (data, _) = try await URLSession.shared.data(for: request)
-        guard let image = UIImage(data: data) else {
-            throw ImageLoaderError.incorrectImageData
-        }
-
-        return image
+        return data
     }
 
-    func loadImages(from urls: [(id: String, url: URL)]) async throws -> AsyncThrowingStream<ImageWithID, Error> {
-        let (stream, continuation) = AsyncThrowingStream<ImageWithID, Error>.makeStream()
-        let task = Task {
-            await withTaskGroup(of: ImageWithID?.self) { group in
+    func loadImages(from urls: [(id: String, url: URL)]) async throws -> AsyncThrowingStream<ImageDataWithID, Error> {
+        let (stream, continuation) = AsyncThrowingStream<ImageDataWithID, Error>.makeStream()
+        let task = Task(priority: .userInitiated) {
+            await withTaskGroup(of: ImageDataWithID?.self) { group in
                 for (id, url) in urls {
                     group.addTask {
-                        guard let image = try? await self.loadImage(from: url) else { return nil }
-                        return (id: id, image: image)
+                        do {
+                            let imageData = try await self.loadImage(from: url)
+                            return (id: id, imageData: imageData)
+                        } catch {
+                            Logger.log(kind: .error, message: error)
+                            return nil
+                        }
                     }
                 }
 
@@ -69,19 +69,19 @@ final class ImageLoaderService: ImageLoaderServiceProtocol {
         return stream
     }
 
-    func loadImages(from urls: [URL]) async throws -> AsyncThrowingStream<UIImage, Error> {
-        let (stream, continuation) = AsyncThrowingStream<UIImage, Error>.makeStream()
+    func loadImages(from urls: [URL]) async throws -> AsyncThrowingStream<Data, Error> {
+        let (stream, continuation) = AsyncThrowingStream<Data, Error>.makeStream()
         let task = Task {
-            await withTaskGroup(of: UIImage?.self) { group in
+            await withTaskGroup(of: Data?.self) { group in
                 for url in urls {
                     _ = group.addTaskUnlessCancelled {
                         try? await self.loadImage(from: url)
                     }
                 }
                 var hasImages = false
-                for await image in group {
-                    guard let image else { continue }
-                    continuation.yield(image)
+                for await imageData in group {
+                    guard let imageData else { continue }
+                    continuation.yield(imageData)
                     hasImages = true
                 }
 

@@ -9,6 +9,7 @@
 
 import Foundation
 import UIKit
+import SwiftData
 
 @Observable
 final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
@@ -72,7 +73,9 @@ extension YouTubeListViewModelMock {
 
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {}
 
-    func insertImageInSnippet(snippetID: String, image: UIImage) {}
+    func insertImageInSnippet(snippetID: String, imageData: Data) {}
+
+    func setModelContext(modelContext: ModelContext) {}
 }
 
 #endif
