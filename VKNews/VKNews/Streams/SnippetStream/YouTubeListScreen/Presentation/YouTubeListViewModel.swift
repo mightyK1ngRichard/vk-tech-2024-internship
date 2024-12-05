@@ -32,6 +32,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     // Actions
     func didTapSnippetCard(snippet: YouTubeSnippetModel)
     func deleteSnippet(snippet: YouTubeSnippetModel)
+    func didDeletedSuccessfully()
 }
 
 // MARK: - YouTubeListViewModel
@@ -100,7 +101,7 @@ extension YouTubeListViewModel {
 
     func fetchData() {
         let request = YouTubeSearchServiceRequest(
-            apiKey: "AIzaSyCoodvTpxCnw1CA5PpuHMMiAyqConzXkSc",
+            apiKey: "AIzaSyDZABggn2rDMawR8PKEUiDqX-X7ILwQzgE",
             query: "christmas",
             maxResults: "10",
             pageToken: nextPageToken
@@ -138,22 +139,30 @@ extension YouTubeListViewModel {
     func showError(errorMessage: String) {
         DispatchQueue.main.async {
             self.errorMessage = errorMessage
+            Toast.shared.present(title: errorMessage)
+            self.showMoreLoading = false
+            self.screenState = self.snippets.isEmpty ? .error(errorMessage) : .success
         }
+    }
+
+    func didDeletedSuccessfully() {
+        Toast.shared.present(title: "Successfully deleted", icon: .checkmark, tint: VKColor<TextPalette>.green.color)
     }
 
     func insertImageInSnippet(snippetID: String, imageResult: Result<Data, Error>) {
         guard let index = snippets.firstIndex(where: { $0.id == snippetID }) else {
+            Logger.log(kind: .error, message: "snippetID=\(snippetID) not found")
             return
         }
         DispatchQueue.main.async {
             switch imageResult {
             case let.success(imageData):
                 self.snippets[index].previewImageState = .data(imageData)
-                // Обновляем изображение в хранилище
                 self.interactor?.insertImageInSnippet(snippetID: self.snippets[index].id, imageData: imageData)
-            case .failure:
-                // TODO: Тут можно прокидывать детали ошибки
+            case let .failure(errorMessage):
+                // Также тут можно прокидывать детали ошибки
                 self.snippets[index].previewImageState = .none
+                Logger.log(kind: .error, message: errorMessage)
             }
         }
     }
@@ -180,7 +189,6 @@ extension YouTubeListViewModel {
             return
         }
         snippets.remove(at: index)
-
         interactor?.deleteSnippetFromMemory(snippet: snippet)
     }
 }

@@ -88,8 +88,18 @@ extension SnippetDetailViewModel {
     func didTapEditButton() {
         // Если кнопка нажата, значит это режим сохранения
         guard isEditing else {
-            withAnimation {
+            withAnimation(.smooth(duration: 0.5, extraBounce: 0)) {
                 isEditing = true
+            }
+            return
+        }
+        didTapSaveButton()
+    }
+
+    private func didTapSaveButton() {
+        if inputTitle == snippet.title && inputDescription == snippet.description {
+            withAnimation(.smooth(duration: 0.5, extraBounce: 0)) {
+                isEditing = false
             }
             return
         }
@@ -104,7 +114,7 @@ extension SnippetDetailViewModel {
     func didTapCancelButton() {
         inputTitle = snippet.title ?? ""
         inputDescription = snippet.description ?? ""
-        withAnimation {
+        withAnimation(.smooth(duration: 0.5, extraBounce: 0)) {
             isEditing = false
         }
     }
@@ -134,6 +144,7 @@ extension SnippetDetailViewModel {
     func showError(errorMessage: String) {
         showingAlert = true
         self.errorMessage = errorMessage
+        Toast.shared.present(title: errorMessage)
     }
 
     func savedSuccessful(snippetID: String, title: String, description: String) {
@@ -148,7 +159,11 @@ extension SnippetDetailViewModel {
         )
         sharedViewModel?.didEditSnippet(snippet: newSnippet)
 
-        // TODO: Показать бейдж с успешным обновлением
+        Toast.shared.present(
+            title: "Updated sussfully",
+            icon: .checkmark,
+            tint: VKColor<TextPalette>.green.color
+        )
         coordinator?.openPreviousScreen()
     }
 }
