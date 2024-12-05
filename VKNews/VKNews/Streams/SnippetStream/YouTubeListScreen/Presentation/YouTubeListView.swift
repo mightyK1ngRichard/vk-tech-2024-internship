@@ -15,20 +15,7 @@ struct YouTubeListView: View {
     var body: some View {
         NavigationStack(path: $coordinator.navPath) {
             ScrollView {
-                ForEach(viewModel.snippets, id: \.hashValue) { snippet in
-                    LazyVStack {
-                        YouTubeSnippetView(snippet: snippet).onAppear {
-                            viewModel.loadMoreData(with: snippet)
-                        }
-                        .onTapGesture {
-                            viewModel.didTapSnippetCard(snippet: snippet)
-                        }
-                    }
-                }
-
-                if viewModel.showMoreLoading {
-                    ProgressView().padding()
-                }
+                screenStateView
             }
             .background(.bar)
             .scrollIndicators(.hidden)
@@ -67,6 +54,10 @@ private extension YouTubeListView {
 
 #Preview("Mockable") {
     YouTubeListView(viewModel: YouTubeListViewModelMock())
+}
+
+#Preview("No Data") {
+    YouTubeListView(viewModel: YouTubeListViewModelMock(fakeScreenState: .emptyView, delay: 4))
 }
 
 #Preview("Mockable Delay") {

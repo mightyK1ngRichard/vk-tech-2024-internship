@@ -5,6 +5,7 @@
 //  Created by Dmitriy Permyakov on 03.12.2024.
 //
 
+import Network
 import Foundation
 import Observation
 import SwiftData
@@ -13,7 +14,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     // Values
     var snippets: [YouTubeSnippetModel] { get }
     var errorMessage: String? { get }
-    var showLoading: Bool { get }
+    var screenState: ScreenState { get }
     var showMoreLoading: Bool { get }
     // Network
     func onAppear()
@@ -43,8 +44,8 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
 
     /// Фрагменты видео
     private(set) var snippets: [YouTubeSnippetModel]
-    /// Флаг показа стартовой загрузки
-    private(set) var showLoading: Bool
+    /// Состояние экрана
+    private(set) var screenState: ScreenState
     /// Флаг показа индикатора загрузки при бесконечном скролле
     private(set) var showMoreLoading: Bool
     /// Текст ошибки
@@ -63,14 +64,14 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
         interactor: YouTubeListInteractorProtocol? = nil,
         router: YouTubeListRouterProtocol? = nil,
         snippets: [YouTubeSnippetModel] = [],
-        showLoading: Bool = false,
+        screenState: ScreenState = .initial,
         showMoreLoading: Bool = false,
         errorMessage: String? = nil
     ) {
         self.interactor = interactor
         self.router = router
         self.snippets = snippets
-        self.showLoading = showLoading
+        self.screenState = screenState
         self.showMoreLoading = showMoreLoading
         self.errorMessage = errorMessage
     }
@@ -85,13 +86,14 @@ extension YouTubeListViewModel {
         guard lastSnippet == nil && nextPageToken == nil else {
             return
         }
-        showLoading = true
+        screenState = .loading
 
         // Достаём данные из памяти устройства, если ещё этого не делали
         if !didLoadMemoryData {
             interactor?.fetchMemorySnippets()
             didLoadMemoryData = true
         }
+
         fetchData()
     }
 
@@ -121,14 +123,14 @@ extension YouTubeListViewModel {
             self.mergeSnippets(newSnippets: data)
             self.nextPageToken = nextPageToken
             self.lastSnippet = data.last
-            self.showLoading = false
+            self.screenState = self.snippets.isEmpty ? .emptyView : .success
             self.showMoreLoading = false
         }
     }
 
     func addSnippetsFromMemory(_ data: [YouTubeSnippetModel]) {
         mergeSnippets(newSnippets: data)
-        showLoading = false
+        screenState = snippets.isEmpty ? .emptyView : .success
         lastSnippet = data.last
     }
 
@@ -187,5 +189,23 @@ extension YouTubeListViewModel {
             return
         }
         snippets[index] = snippet
+    }
+}
+
+// MARK: - Helper
+
+private extension YouTubeListViewModel {
+
+    func checkInternetConnection(completion: @escaping (Bool) -> Void) {
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "InternetConnectionMonitor")
+
+        monitor.pathUpdateHandler = { path in
+            if path.status != .satisfied {
+                completion(false)
+            }
+        }
+
+        monitor.start(queue: queue)
     }
 }

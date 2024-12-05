@@ -15,9 +15,10 @@ import SwiftData
 final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
     var snippets: [YouTubeSnippetModel]
     var errorMessage: String?
-    var showLoading: Bool
+    var screenState: ScreenState
     var showMoreLoading: Bool
     var delay: TimeInterval
+    var fakeScreenState: ScreenState? = nil
 
     @ObservationIgnored
     private var lastSnippet: YouTubeSnippetModel? = nil
@@ -25,15 +26,17 @@ final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
     private var itemsCount = 0
 
     init(
+        fakeScreenState: ScreenState? = nil,
         snippets: [YouTubeSnippetModel] = [],
         errorMessage: String? = nil,
-        showLoading: Bool = false,
+        screenState: ScreenState = .initial,
         showMoreLoading: Bool = false,
         delay: TimeInterval = 0
     ) {
+        self.fakeScreenState = fakeScreenState
         self.snippets = snippets
         self.errorMessage = errorMessage
-        self.showLoading = showLoading
+        self.screenState = screenState
         self.showMoreLoading = showMoreLoading
         self.delay = delay
     }
@@ -46,14 +49,18 @@ extension YouTubeListViewModelMock {
     }
 
     func fetchData() {
-        showLoading = true
+        screenState = .loading
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            if let fakeScreenState = self.fakeScreenState {
+                self.screenState = fakeScreenState
+                return
+            }
             self.snippets = (0...20).map {
                 .generateMockModel(for: String($0))
             }
             self.lastSnippet = self.snippets.last
             self.itemsCount = 20
-            self.showLoading = false
+            self.screenState = .success
         }
     }
 
