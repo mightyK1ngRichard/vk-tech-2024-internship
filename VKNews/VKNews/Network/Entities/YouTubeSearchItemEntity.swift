@@ -21,7 +21,7 @@ struct SearchItemID: Decodable {
 
 // MARK: - SearchItemSnippetEntity
 
-struct SearchItemSnippetEntity: Decodable {
+struct SearchItemSnippetEntity: Decodable, Equatable {
     let publishedAt: String?
     let channelId: String?
     let title: String?
@@ -30,17 +30,47 @@ struct SearchItemSnippetEntity: Decodable {
     let channelTitle: String?
 }
 
+extension SearchItemSnippetEntity {
+
+    static func == (lhs: SearchItemSnippetEntity, rhs: SearchItemSnippetEntity) -> Bool {
+        lhs.publishedAt == rhs.publishedAt
+        && lhs.channelId == rhs.channelId
+        && lhs.title == rhs.title
+        && lhs.description == rhs.description
+        && lhs.thumbnails == rhs.thumbnails
+        && lhs.channelTitle == rhs.channelTitle
+    }
+}
+
 // MARK: - SearchItemThumbnails
 
-struct SearchItemThumbnails: Decodable {
+struct SearchItemThumbnails: Decodable, Equatable {
     let high: ThumbnailsData?
 }
 
 extension SearchItemThumbnails {
 
-    struct ThumbnailsData: Decodable {
+    static func == (lhs: SearchItemThumbnails, rhs: SearchItemThumbnails) -> Bool {
+        lhs.high == rhs.high
+    }
+}
+
+// MARK: - ThumbnailsData
+
+extension SearchItemThumbnails {
+
+    struct ThumbnailsData: Decodable, Equatable {
         let url: String?
         let width: Int?
         let height: Int?
+    }
+}
+
+extension SearchItemThumbnails.ThumbnailsData {
+
+    static func == (lhs: SearchItemThumbnails.ThumbnailsData, rhs: SearchItemThumbnails.ThumbnailsData) -> Bool {
+        lhs.url == rhs.url
+        && lhs.width == rhs.width
+        && lhs.height == rhs.height
     }
 }

@@ -8,6 +8,7 @@
 import Foundation
 
 protocol YouTubeListPresenterProtocol: AnyObject {
+    var viewModel: YouTubeListViewModelProtocol? { get set }
     func presentSnippetsList(response: YouTubeSearchResponseEntity)
     func addImageIntoSnippet(snippetID: String, imageData: Data)
     func presentError(error: Error)
@@ -22,10 +23,7 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
 
     func presentSnippetsList(response: YouTubeSearchResponseEntity) {
         let snippets: [YouTubeSnippetModel] = response.items.compactMap { item in
-            guard
-                let id = item.id?.videoId,
-                let snippet = item.snippet
-            else {
+            guard let id = item.id?.videoId, let snippet = item.snippet else {
                 return nil
             }
 

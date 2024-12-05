@@ -8,6 +8,9 @@
 import Foundation
 
 protocol SnippetDetailPresenterProtocol: AnyObject {
+    // Values
+    var viewModel: SnippetDetailViewModelProtocol? { get set }
+    // Display
     func showError(_ errorMessage: String)
     func savedSuccessful(snippetID: String, title: String, description: String)
     func updateSnippetMemoryStatus()
