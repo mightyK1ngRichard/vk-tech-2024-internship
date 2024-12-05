@@ -24,7 +24,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?)
     func addSnippetsFromMemory(_ data: [YouTubeSnippetModel])
     func showError(errorMessage: String)
-    func insertImageInSnippet(snippetID: String, imageData: Data)
+    func insertImageInSnippet(snippetID: String, imageResult: Result<Data, Error>)
     // Setters
     func setModelContext(modelContext: ModelContext)
     func setCoordinator(with coordinator: Coordinator)
@@ -141,14 +141,20 @@ extension YouTubeListViewModel {
         }
     }
 
-    func insertImageInSnippet(snippetID: String, imageData: Data) {
+    func insertImageInSnippet(snippetID: String, imageResult: Result<Data, Error>) {
         guard let index = snippets.firstIndex(where: { $0.id == snippetID }) else {
             return
         }
         DispatchQueue.main.async {
-            self.snippets[index].previewImageState = .data(imageData)
-            // Обновляем изображение в хранилище
-            self.interactor?.insertImageInSnippet(snippetID: self.snippets[index].id, imageData: imageData)
+            switch imageResult {
+            case let.success(imageData):
+                self.snippets[index].previewImageState = .data(imageData)
+                // Обновляем изображение в хранилище
+                self.interactor?.insertImageInSnippet(snippetID: self.snippets[index].id, imageData: imageData)
+            case .failure:
+                // TODO: Тут можно прокидывать детали ошибки
+                self.snippets[index].previewImageState = .none
+            }
         }
     }
 

@@ -18,16 +18,16 @@ enum ImageLoaderError: Error {
 protocol ImageLoaderServiceProtocol: Sendable {
     func loadImage(from url: URL) async throws -> Data
     func loadImages(from urls: [URL]) async throws -> AsyncThrowingStream<Data, Error>
-    func loadImages(from urls: [(id: String, url: URL)]) async throws -> AsyncThrowingStream<(id: String, imageData: Data), Error>
+    func loadImages(from urls: [(id: String, url: URL)]) async throws -> AsyncThrowingStream<(id: String, imageData: Result<Data, Error>), Error>
 }
 
 // MARK: - ImageLoaderService
 
 final class ImageLoaderService: ImageLoaderServiceProtocol {
-    typealias ImageDataWithID = (id: String, imageData: Data)
+    typealias ImageDataWithID = (id: String, imageData: Result<Data, Error>)
 
     func loadImage(from url: URL) async throws -> Data {
-        let request = URLRequest(url: url, timeoutInterval: 1)
+        let request = URLRequest(url: url, timeoutInterval: 10)
         let (data, _) = try await URLSession.shared.data(for: request)
         return data
     }
@@ -40,10 +40,10 @@ final class ImageLoaderService: ImageLoaderServiceProtocol {
                     group.addTask {
                         do {
                             let imageData = try await self.loadImage(from: url)
-                            return (id: id, imageData: imageData)
+                            return (id: id, imageData: .success(imageData))
                         } catch {
                             Logger.log(kind: .error, message: error)
-                            return nil
+                            return (id: id, imageData: .failure(error))
                         }
                     }
                 }

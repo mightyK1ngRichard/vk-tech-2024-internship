@@ -91,7 +91,7 @@ extension YouTubeListViewModelMock {
 
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {}
 
-    func insertImageInSnippet(snippetID: String, imageData: Data) {}
+    func insertImageInSnippet(snippetID: String, imageResult: Result<Data, Error>) {}
 
     func setModelContext(modelContext: ModelContext) {}
 

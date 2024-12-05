@@ -10,7 +10,7 @@ import Foundation
 protocol YouTubeListPresenterProtocol: AnyObject {
     var viewModel: YouTubeListViewModelProtocol? { get set }
     func presentSnippetsList(response: YouTubeSearchResponseEntity)
-    func addImageIntoSnippet(snippetID: String, imageData: Data)
+    func addImageIntoSnippet(snippetID: String, imageResult: Result<Data, Error>)
     func presentError(error: Error)
     func getSnippetsFromMemory(snippets: [SDYouTubeSnippetModel])
 }
@@ -40,8 +40,8 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
         viewModel?.showSnippets(snippets, nextPageToken: response.nextPageToken)
     }
 
-    func addImageIntoSnippet(snippetID: String, imageData: Data) {
-        viewModel?.insertImageInSnippet(snippetID: snippetID, imageData: imageData)
+    func addImageIntoSnippet(snippetID: String, imageResult: Result<Data, Error>) {
+        viewModel?.insertImageInSnippet(snippetID: snippetID, imageResult: imageResult)
     }
 
     func getSnippetsFromMemory(snippets: [SDYouTubeSnippetModel]) {

@@ -65,8 +65,8 @@ extension YouTubeListInteractor {
 
                 // Получаем изображения снипетов
                 let stream = try await startLoadingImages(response.items)
-                for try await (snippetID, imageData) in stream {
-                    presenter?.addImageIntoSnippet(snippetID: snippetID, imageData: imageData)
+                for try await (snippetID, imageResult) in stream {
+                    presenter?.addImageIntoSnippet(snippetID: snippetID, imageResult: imageResult)
                 }
             } catch {
                 Logger.log(kind: .error, message: error)
@@ -172,7 +172,7 @@ private extension YouTubeListInteractor {
 
     func startLoadingImages(
         _ snippets: [YouTubeSearchItemEntity]
-    ) async throws -> AsyncThrowingStream<(id: String, imageData: Data), Error> {
+    ) async throws -> AsyncThrowingStream<(id: String, imageData: Result<Data, Error>), Error> {
         let imagesWithIDs: [(id: String, url: URL)] = snippets.compactMap {
             guard
                 let id = $0.id?.videoId,
