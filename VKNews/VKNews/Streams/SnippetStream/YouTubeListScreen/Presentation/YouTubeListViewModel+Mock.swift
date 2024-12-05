@@ -102,6 +102,8 @@ extension YouTubeListViewModelMock {
     func addSnippetsFromMemory(_ data: [YouTubeSnippetModel]) {}
 
     func didEditSnippet(snippet: YouTubeSnippetModel) {}
+
+    func didDeletedSuccessfully() {}
 }
 
 #endif

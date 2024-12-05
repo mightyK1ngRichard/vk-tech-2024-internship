@@ -16,7 +16,9 @@ struct VKNewsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            YouTubeListView(viewModel: YouTubeListAssembly.shared.build())
+            RootView {
+                YouTubeListView(viewModel: YouTubeListAssembly.shared.build())
+            }
         }
         .modelContainer(for: SDYouTubeSnippetModel.self)
     }
