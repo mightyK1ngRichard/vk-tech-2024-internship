@@ -12,6 +12,7 @@ protocol SnippetDetailInteractorProtocol: AnyObject {
     // Memory
     func updateSnippetInMemory(snippetID: String, title: String, description: String)
     func setModelContext(context: ModelContext)
+    func fetchSnippet(snippetID: String)
 }
 
 // MARK: - SnippetDetailInteractor
@@ -32,6 +33,15 @@ final class SnippetDetailInteractor: SnippetDetailInteractorProtocol {
 // MARK: - SnippetDetailInteractorProtocol
 
 extension SnippetDetailInteractor {
+
+    func fetchSnippet(snippetID: String) {
+        let predicate = #Predicate<SDYouTubeSnippetModel> { $0._id == snippetID }
+        let fecthDescription = FetchDescriptor(predicate: predicate)
+        let result = try? modelContext?.fetch(fecthDescription)
+        if result?.isEmpty == false {
+            presenter?.updateSnippetMemoryStatus()
+        }
+    }
 
     func updateSnippetInMemory(snippetID: String, title: String, description: String) {
         guard let modelContext else {

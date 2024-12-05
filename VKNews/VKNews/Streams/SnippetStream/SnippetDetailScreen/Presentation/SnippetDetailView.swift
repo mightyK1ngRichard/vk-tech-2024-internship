@@ -17,6 +17,7 @@ struct SnippetDetailView: View {
         mainContainer.onAppear {
             viewModel.setModelContext(modelContext: modelContext)
             viewModel.setCoordinator(coordinator: coordinator)
+            viewModel.checkSnippetIsSaved()
         }
         .alert(
             viewModel.errorMessage,
@@ -38,4 +39,5 @@ struct SnippetDetailView: View {
         )
     )
     .modelContainer(for: SDYouTubeSnippetModel.self, inMemory: true)
+    .environment(Coordinator())
 }

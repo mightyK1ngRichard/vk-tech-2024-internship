@@ -16,9 +16,11 @@ protocol SnippetDetailViewModelProtocol: AnyObject {
     var showingAlert: Bool { get set }
     var buttonTitle: String { get }
     var errorMessage: String { get }
+    var hasSnippetInMemory: Bool { get }
     var snippet: YouTubeSnippetModel { get }
     var isEditing: Bool { get }
     // Actions
+    func checkSnippetIsSaved()
     func didTapEditButton()
     func didTapCancelButton()
     func didTapAlertButton()
@@ -27,6 +29,7 @@ protocol SnippetDetailViewModelProtocol: AnyObject {
     // Display data
     func showError(errorMessage: String)
     func savedSuccessful(snippetID: String, title: String, description: String)
+    func updateSnippetMemoryStatus()
     // Setter
     func setModelContext(modelContext: ModelContext)
     func setCoordinator(coordinator: Coordinator)
@@ -47,6 +50,7 @@ final class SnippetDetailViewModel: SnippetDetailViewModelProtocol {
     let snippet: YouTubeSnippetModel
     private(set) var errorMessage = ""
     private(set) var isEditing = false
+    private(set) var hasSnippetInMemory = false
     @ObservationIgnored
     private var coordinator: Coordinator?
 
@@ -62,6 +66,7 @@ final class SnippetDetailViewModel: SnippetDetailViewModelProtocol {
         self.inputDescription = inputDescription.isEmpty ? snippet.description ?? "" : inputDescription
         self.snippet = snippet
         self.isEditing = openEditView
+        self.hasSnippetInMemory = snippet.getFromMemory
     }
 
     // MARK: Computed values
@@ -74,6 +79,11 @@ final class SnippetDetailViewModel: SnippetDetailViewModelProtocol {
 // MARK: - Actions
 
 extension SnippetDetailViewModel {
+
+    func checkSnippetIsSaved() {
+        guard !hasSnippetInMemory else { return }
+        interactor?.fetchSnippet(snippetID: snippet.id)
+    }
 
     func didTapEditButton() {
         // Если кнопка нажата, значит это режим сохранения
@@ -116,6 +126,10 @@ extension SnippetDetailViewModel {
 // MARK: - Display data
 
 extension SnippetDetailViewModel {
+
+    func updateSnippetMemoryStatus() {
+        hasSnippetInMemory = true
+    }
 
     func showError(errorMessage: String) {
         showingAlert = true

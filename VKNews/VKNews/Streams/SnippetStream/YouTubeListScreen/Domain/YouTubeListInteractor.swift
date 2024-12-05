@@ -75,7 +75,12 @@ extension YouTubeListInteractor {
     /// Достаём данные из устройства
     func fetchMemorySnippets() {
         let descriptor = FetchDescriptor<SDYouTubeSnippetModel>()
-        let results = (try? modelContext?.fetch(descriptor)) ?? []
+        guard
+            let results = (try? modelContext?.fetch(descriptor)),
+            !results.isEmpty
+        else {
+            return
+        }
         presenter?.getSnippetsFromMemory(snippets: results)
     }
 
