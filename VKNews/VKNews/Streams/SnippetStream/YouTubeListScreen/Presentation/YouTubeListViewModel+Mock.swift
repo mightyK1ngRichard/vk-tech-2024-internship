@@ -13,6 +13,7 @@ import SwiftData
 
 @Observable
 final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
+    var orderMode: SnippetSortingMode = .relevance
     var snippets: [YouTubeSnippetModel]
     var errorMessage: String?
     var screenState: ScreenState
@@ -102,6 +103,8 @@ extension YouTubeListViewModelMock {
     func addSnippetsFromMemory(_ data: [YouTubeSnippetModel]) {}
 
     func didEditSnippet(snippet: YouTubeSnippetModel) {}
+
+    func didDeletedSuccessfully() {}
 }
 
 #endif

@@ -144,15 +144,16 @@ extension YouTubeListInteractor {
             let sdSnippet = results.first
         else {
             Logger.log(kind: .error, message: "snippetID: \(snippetID) не найден в хранилище. Сниппет не удаленн")
-            // TODO: presenter.showError() ...
+            presenter?.presentError(error: InteractorError.deleteContextModelError)
             return
         }
         modelContext?.delete(sdSnippet)
         do {
             try modelContext?.save()
+            presenter?.didDeletedSuccessfully()
         } catch {
             Logger.log(kind: .error, message: error)
-            // TODO: presenter.showError() ...
+            presenter?.presentError(error: InteractorError.deleteContextModelError)
         }
     }
 
@@ -195,5 +196,6 @@ extension YouTubeListInteractor {
 
     enum InteractorError: Error {
         case noContextModel
+        case deleteContextModelError
     }
 }

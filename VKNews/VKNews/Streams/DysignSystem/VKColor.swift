@@ -60,6 +60,10 @@ extension VKColor where Palette == BackgroundPalette {
     static let bgShimmering = VKColor(hexLight: 0xF3F3F7, hexDark: 0x242429)
     /// Цвет фона бейджа
     static let bgGreen = VKColor(hexLight: 0xE4F8EE, hexDark: 0x203C2E)
+    static let bgPurple = VKColor(hexLight: 0xF2E6FE, hexDark: 0x3A2D53)
+    static let bgPressedPurple = VKColor(hexLight: 0xD3B6FB, hexDark: 0x4F416D)
+    static let bgGray = VKColor(hexLight: 0xFFFFFF, hexDark: 0x242429)
+    static let bgPressedGray = VKColor(hexLight: 0xD1D1E0, hexDark: 0x3B3B44)
 }
 
 // MARK: - SeparatorPalette

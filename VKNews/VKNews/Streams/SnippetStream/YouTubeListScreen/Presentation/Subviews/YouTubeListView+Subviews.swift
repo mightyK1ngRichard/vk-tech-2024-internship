@@ -23,6 +23,14 @@ extension YouTubeListView {
         }
     }
 
+    var headerView: some View {
+        HeaderSectionView(
+            cells: SnippetSortingMode.allCases,
+            lastSelectedItem: $viewModel.orderMode
+        )
+        .padding(.top, 8)
+    }
+
     var shimmeringContainer: some View {
         ForEach(0..<3) { _ in
             SnippetShimmeringView()
@@ -59,17 +67,21 @@ extension YouTubeListView {
 
     @ViewBuilder
     var contentContainer: some View {
-        ForEach(viewModel.snippets, id: \.hashValue) { snippet in
-            LazyVStack {
-                YouTubeSnippetView(
-                    snippet: snippet,
-                    deleteHandler: viewModel.deleteSnippet
-                ).onAppear {
-                    viewModel.loadMoreData(with: snippet)
+        LazyVStack(pinnedViews: [.sectionHeaders]) {
+            Section {
+                ForEach(viewModel.snippets, id: \.hashValue) { snippet in
+                    YouTubeSnippetView(
+                        snippet: snippet,
+                        deleteHandler: viewModel.deleteSnippet
+                    ).onAppear {
+                        viewModel.loadMoreData(with: snippet)
+                    }
+                    .onTapGesture {
+                        viewModel.didTapSnippetCard(snippet: snippet)
+                    }
                 }
-                .onTapGesture {
-                    viewModel.didTapSnippetCard(snippet: snippet)
-                }
+            } header: {
+                headerView
             }
         }
 

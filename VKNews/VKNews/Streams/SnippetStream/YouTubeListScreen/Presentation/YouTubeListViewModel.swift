@@ -5,7 +5,6 @@
 //  Created by Dmitriy Permyakov on 03.12.2024.
 //
 
-import Network
 import Foundation
 import Observation
 import SwiftData
@@ -16,6 +15,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     var errorMessage: String? { get }
     var screenState: ScreenState { get }
     var showMoreLoading: Bool { get }
+    var orderMode: SnippetSortingMode { get set }
     // Network
     func onAppear()
     func fetchData()
@@ -32,6 +32,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     // Actions
     func didTapSnippetCard(snippet: YouTubeSnippetModel)
     func deleteSnippet(snippet: YouTubeSnippetModel)
+    func didDeletedSuccessfully()
 }
 
 // MARK: - YouTubeListViewModel
@@ -42,7 +43,15 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
     var interactor: YouTubeListInteractorProtocol?
     @ObservationIgnored
     var router: YouTubeListRouterProtocol?
-
+    
+    /// Режим сортировки
+    var orderMode: SnippetSortingMode {
+        didSet {
+            guard oldValue != orderMode else { return }
+            insertNetworkDataIntoStart = true
+            fetchData()
+        }
+    }
     /// Фрагменты видео
     private(set) var snippets: [YouTubeSnippetModel]
     /// Состояние экрана
@@ -54,6 +63,10 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
     /// Флаг провекри, доставали ли мы уже данные из памяти
     private(set) var didLoadMemoryData = false
 
+    
+    /// Флаг, сообщающий куда добавлять новые данные. В начало или конец
+    @ObservationIgnored
+    private var insertNetworkDataIntoStart = false
     /// Токен для следующей пагинации
     @ObservationIgnored
     private var nextPageToken: String?
@@ -65,10 +78,12 @@ final class YouTubeListViewModel: YouTubeListViewModelProtocol {
         interactor: YouTubeListInteractorProtocol? = nil,
         router: YouTubeListRouterProtocol? = nil,
         snippets: [YouTubeSnippetModel] = [],
+        orderMode: SnippetSortingMode = .relevance,
         screenState: ScreenState = .initial,
         showMoreLoading: Bool = false,
         errorMessage: String? = nil
     ) {
+        self.orderMode = orderMode
         self.interactor = interactor
         self.router = router
         self.snippets = snippets
@@ -87,6 +102,7 @@ extension YouTubeListViewModel {
         guard lastSnippet == nil && nextPageToken == nil else {
             return
         }
+        insertNetworkDataIntoStart = true
         screenState = .loading
 
         // Достаём данные из памяти устройства, если ещё этого не делали
@@ -100,10 +116,11 @@ extension YouTubeListViewModel {
 
     func fetchData() {
         let request = YouTubeSearchServiceRequest(
-            apiKey: "AIzaSyCoodvTpxCnw1CA5PpuHMMiAyqConzXkSc",
+            apiKey: "AIzaSyBwvqnXYz9c89ZMc12kpojT1qpf_FmYNkA",
             query: "christmas",
             maxResults: "10",
-            pageToken: nextPageToken
+            pageToken: nextPageToken,
+            order: orderMode.rawValue
         )
         interactor?.fetchSnippets(req: request)
     }
@@ -121,49 +138,62 @@ extension YouTubeListViewModel {
 
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {
         DispatchQueue.main.async {
-            self.mergeSnippets(newSnippets: data)
+            self.mergeSnippets(newSnippets: data, addToEnd: !self.insertNetworkDataIntoStart)
+            self.lastSnippet = self.snippets.last
+            self.insertNetworkDataIntoStart = false
             self.nextPageToken = nextPageToken
-            self.lastSnippet = data.last
             self.screenState = self.snippets.isEmpty ? .emptyView : .success
             self.showMoreLoading = false
         }
     }
 
     func addSnippetsFromMemory(_ data: [YouTubeSnippetModel]) {
-        mergeSnippets(newSnippets: data)
+        mergeSnippets(newSnippets: data, addToEnd: true)
         screenState = .success
-        lastSnippet = data.last
+        lastSnippet = snippets.last
     }
 
     func showError(errorMessage: String) {
         DispatchQueue.main.async {
             self.errorMessage = errorMessage
+            Toast.shared.present(title: errorMessage)
+            self.showMoreLoading = false
+            self.screenState = self.snippets.isEmpty ? .error(errorMessage) : .success
         }
+    }
+
+    func didDeletedSuccessfully() {
+        Toast.shared.present(title: "Successfully deleted", icon: .checkmark, tint: VKColor<TextPalette>.green.color)
     }
 
     func insertImageInSnippet(snippetID: String, imageResult: Result<Data, Error>) {
         guard let index = snippets.firstIndex(where: { $0.id == snippetID }) else {
+            Logger.log(kind: .error, message: "snippetID=\(snippetID) not found")
             return
         }
         DispatchQueue.main.async {
             switch imageResult {
             case let.success(imageData):
                 self.snippets[index].previewImageState = .data(imageData)
-                // Обновляем изображение в хранилище
                 self.interactor?.insertImageInSnippet(snippetID: self.snippets[index].id, imageData: imageData)
-            case .failure:
-                // TODO: Тут можно прокидывать детали ошибки
+            case let .failure(errorMessage):
+                // Также тут можно прокидывать детали ошибки
                 self.snippets[index].previewImageState = .none
+                Logger.log(kind: .error, message: errorMessage)
             }
         }
     }
 
     /// Добавляем уникальные сниппеты в конец массива
     /// - Parameter newSnippets: Новые сниппеты
-    private func mergeSnippets(newSnippets: [YouTubeSnippetModel]) {
+    private func mergeSnippets(newSnippets: [YouTubeSnippetModel], addToEnd: Bool) {
         var seen = Set(snippets)
         let uniqueSnippets = newSnippets.filter { seen.insert($0).inserted }
-        snippets.append(contentsOf: uniqueSnippets)
+        if addToEnd {
+            snippets.append(contentsOf: uniqueSnippets)
+        } else {
+            snippets.insert(contentsOf: uniqueSnippets, at: 0)
+        }
     }
 }
 
@@ -180,7 +210,6 @@ extension YouTubeListViewModel {
             return
         }
         snippets.remove(at: index)
-
         interactor?.deleteSnippetFromMemory(snippet: snippet)
     }
 }
@@ -205,23 +234,5 @@ extension YouTubeListViewModel {
             return
         }
         snippets[index] = snippet
-    }
-}
-
-// MARK: - Helper
-
-private extension YouTubeListViewModel {
-
-    func checkInternetConnection(completion: @escaping (Bool) -> Void) {
-        let monitor = NWPathMonitor()
-        let queue = DispatchQueue(label: "InternetConnectionMonitor")
-
-        monitor.pathUpdateHandler = { path in
-            if path.status != .satisfied {
-                completion(false)
-            }
-        }
-
-        monitor.start(queue: queue)
     }
 }

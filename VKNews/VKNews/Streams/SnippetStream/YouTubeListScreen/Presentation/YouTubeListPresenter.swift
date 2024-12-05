@@ -13,6 +13,7 @@ protocol YouTubeListPresenterProtocol: AnyObject {
     func addImageIntoSnippet(snippetID: String, imageResult: Result<Data, Error>)
     func presentError(error: Error)
     func getSnippetsFromMemory(snippets: [SDYouTubeSnippetModel])
+    func didDeletedSuccessfully()
 }
 
 // MARK: - YouTubeListPresenter
@@ -57,5 +58,9 @@ final class YouTubeListPresenter: YouTubeListPresenterProtocol {
             return
         }
         viewModel?.showError(errorMessage: error.localizedDescription)
+    }
+
+    func didDeletedSuccessfully() {
+        viewModel?.didDeletedSuccessfully()
     }
 }
