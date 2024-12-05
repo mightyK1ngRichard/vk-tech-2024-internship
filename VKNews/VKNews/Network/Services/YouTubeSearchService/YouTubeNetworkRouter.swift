@@ -19,7 +19,8 @@ extension YouTubeNetworkRouter {
         apiKey: String,
         query: String,
         maxResults: String,
-        pageToken: String? = nil
+        pageToken: String? = nil,
+        order: String
     ) -> URL? {
         let path = rawValue
         var urlComponents = URLComponents(string: YouTubeNetworkRouter.baseURLString + "/" + path)
@@ -29,7 +30,8 @@ extension YouTubeNetworkRouter {
             "part": "snippet",
             "q": query,
             "maxResults": maxResults,
-            "key": apiKey
+            "key": apiKey,
+            "order": order
         ]
 
         for (key, value) in parameters {

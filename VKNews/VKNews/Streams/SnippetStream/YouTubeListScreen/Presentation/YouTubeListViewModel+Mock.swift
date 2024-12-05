@@ -13,6 +13,7 @@ import SwiftData
 
 @Observable
 final class YouTubeListViewModelMock: YouTubeListViewModelProtocol {
+    var orderMode: SnippetSortingMode = .relevance
     var snippets: [YouTubeSnippetModel]
     var errorMessage: String?
     var screenState: ScreenState

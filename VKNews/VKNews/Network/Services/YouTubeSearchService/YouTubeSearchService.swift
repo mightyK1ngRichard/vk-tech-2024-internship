@@ -28,7 +28,7 @@ extension YouTubeSearchService {
 
     func getYouTubeVideos(req: YouTubeSearchServiceRequest) async throws -> YouTubeSearchResponseEntity {
         guard
-            let url = router.buildURL(apiKey: req.apiKey, query: req.query, maxResults: req.maxResults, pageToken: req.pageToken)
+            let url = router.buildURL(apiKey: req.apiKey, query: req.query, maxResults: req.maxResults, pageToken: req.pageToken, order: req.order)
         else {
             throw YouTubeSearchNetworkError.invalidURL
         }
