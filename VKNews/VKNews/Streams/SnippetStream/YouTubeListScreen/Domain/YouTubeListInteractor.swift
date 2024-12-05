@@ -10,6 +10,10 @@ import UIKit
 import SwiftData
 
 protocol YouTubeListInteractorProtocol: AnyObject {
+    // Values
+    var youTubeService: YouTubeSearchServiceProtocol { get }
+    var imageLoaderService: ImageLoaderServiceProtocol { get }
+    var presenter: YouTubeListPresenterProtocol? { get set }
     // Network
     func fetchSnippets(req: YouTubeSearchServiceRequest)
     // Memory
@@ -25,8 +29,8 @@ protocol YouTubeListInteractorProtocol: AnyObject {
 final class YouTubeListInteractor: YouTubeListInteractorProtocol {
 
     var presenter: YouTubeListPresenterProtocol?
-    private let youTubeService: YouTubeSearchServiceProtocol
-    private let imageLoaderService: ImageLoaderServiceProtocol
+    let youTubeService: YouTubeSearchServiceProtocol
+    let imageLoaderService: ImageLoaderServiceProtocol
     private var imagesLoadingTask: Task<Void, Never>?
     private var modelContext: ModelContext?
 
@@ -75,7 +79,12 @@ extension YouTubeListInteractor {
     /// Достаём данные из устройства
     func fetchMemorySnippets() {
         let descriptor = FetchDescriptor<SDYouTubeSnippetModel>()
-        let results = (try? modelContext?.fetch(descriptor)) ?? []
+        guard
+            let results = (try? modelContext?.fetch(descriptor)),
+            !results.isEmpty
+        else {
+            return
+        }
         presenter?.getSnippetsFromMemory(snippets: results)
     }
 

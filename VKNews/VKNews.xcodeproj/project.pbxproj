@@ -6,11 +6,27 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		E51AC9E22D01A4E100B8955D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E5719D3C2CFE5BBF0050DCCE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E5719D432CFE5BBF0050DCCE;
+			remoteInfo = VKNews;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		E51AC9DE2D01A4E100B8955D /* VKNewsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VKNewsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E5719D442CFE5BBF0050DCCE /* VKNews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VKNews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		E51AC9DF2D01A4E100B8955D /* VKNewsTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = VKNewsTests;
+			sourceTree = "<group>";
+		};
 		E5719D462CFE5BBF0050DCCE /* VKNews */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = VKNews;
@@ -19,6 +35,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		E51AC9DB2D01A4E100B8955D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E5719D412CFE5BBF0050DCCE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				E5719D462CFE5BBF0050DCCE /* VKNews */,
+				E51AC9DF2D01A4E100B8955D /* VKNewsTests */,
 				E5719D452CFE5BBF0050DCCE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				E5719D442CFE5BBF0050DCCE /* VKNews.app */,
+				E51AC9DE2D01A4E100B8955D /* VKNewsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,6 +73,29 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		E51AC9DD2D01A4E100B8955D /* VKNewsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E51AC9E62D01A4E100B8955D /* Build configuration list for PBXNativeTarget "VKNewsTests" */;
+			buildPhases = (
+				E51AC9DA2D01A4E100B8955D /* Sources */,
+				E51AC9DB2D01A4E100B8955D /* Frameworks */,
+				E51AC9DC2D01A4E100B8955D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E51AC9E32D01A4E100B8955D /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E51AC9DF2D01A4E100B8955D /* VKNewsTests */,
+			);
+			name = VKNewsTests;
+			packageProductDependencies = (
+			);
+			productName = VKNewsTests;
+			productReference = E51AC9DE2D01A4E100B8955D /* VKNewsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		E5719D432CFE5BBF0050DCCE /* VKNews */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E5719D522CFE5BC00050DCCE /* Build configuration list for PBXNativeTarget "VKNews" */;
@@ -80,6 +128,10 @@
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					E51AC9DD2D01A4E100B8955D = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = E5719D432CFE5BBF0050DCCE;
+					};
 					E5719D432CFE5BBF0050DCCE = {
 						CreatedOnToolsVersion = 16.1;
 					};
@@ -100,11 +152,19 @@
 			projectRoot = "";
 			targets = (
 				E5719D432CFE5BBF0050DCCE /* VKNews */,
+				E51AC9DD2D01A4E100B8955D /* VKNewsTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		E51AC9DC2D01A4E100B8955D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E5719D422CFE5BBF0050DCCE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +175,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		E51AC9DA2D01A4E100B8955D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E5719D402CFE5BBF0050DCCE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +191,51 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		E51AC9E32D01A4E100B8955D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E5719D432CFE5BBF0050DCCE /* VKNews */;
+			targetProxy = E51AC9E22D01A4E100B8955D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		E51AC9E42D01A4E100B8955D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SKCX3NJ774;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.migthyK1ngRichard.VKNewsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VKNews.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VKNews";
+			};
+			name = Debug;
+		};
+		E51AC9E52D01A4E100B8955D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = SKCX3NJ774;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.migthyK1ngRichard.VKNewsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VKNews.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VKNews";
+			};
+			name = Release;
+		};
 		E5719D502CFE5BC00050DCCE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -315,6 +426,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		E51AC9E62D01A4E100B8955D /* Build configuration list for PBXNativeTarget "VKNewsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E51AC9E42D01A4E100B8955D /* Debug */,
+				E51AC9E52D01A4E100B8955D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		E5719D3F2CFE5BBF0050DCCE /* Build configuration list for PBXProject "VKNews" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

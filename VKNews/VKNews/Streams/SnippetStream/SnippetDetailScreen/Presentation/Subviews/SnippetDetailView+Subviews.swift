@@ -30,7 +30,9 @@ extension SnippetDetailView {
             .padding(.bottom)
         }
         .safeAreaInset(edge: .bottom) {
-            buttonsConstainer
+            if viewModel.hasSnippetInMemory {
+                buttonsConstainer
+            }
         }
     }
 
@@ -66,7 +68,9 @@ extension SnippetDetailView {
 
             Spacer()
 
-            deleteButton
+            if viewModel.hasSnippetInMemory {
+                deleteButton
+            }
         }
         .padding(.horizontal)
         .padding(.bottom)
