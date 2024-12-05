@@ -12,4 +12,5 @@ struct YouTubeSearchServiceRequest {
     let query: String
     let maxResults: String
     let pageToken: String?
+    var order: String
 }
