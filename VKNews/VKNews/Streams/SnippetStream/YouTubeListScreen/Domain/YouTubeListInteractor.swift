@@ -17,6 +17,7 @@ protocol YouTubeListInteractorProtocol: AnyObject {
     func fetchMemorySnippets()
     func saveOnDeviceMemory(entities: [YouTubeSearchItemEntity]) throws
     func insertImageInSnippet(snippetID: String, imageData: Data)
+    func deleteSnippetFromMemory(snippet: YouTubeSnippetModel)
 }
 
 // MARK: - YouTubeListInteractor
@@ -123,6 +124,27 @@ extension YouTubeListInteractor {
 
         snippet._previewImageData = imageData
         try? modelContext?.save()
+    }
+
+    func deleteSnippetFromMemory(snippet: YouTubeSnippetModel) {
+        let snippetID = snippet.id
+        let predicate = #Predicate<SDYouTubeSnippetModel> { $0._id == snippetID }
+        let description = FetchDescriptor(predicate: predicate)
+        guard
+            let results = try? modelContext?.fetch(description),
+            let sdSnippet = results.first
+        else {
+            Logger.log(kind: .error, message: "snippetID: \(snippetID) не найден в хранилище. Сниппет не удаленн")
+            // TODO: presenter.showError() ...
+            return
+        }
+        modelContext?.delete(sdSnippet)
+        do {
+            try modelContext?.save()
+        } catch {
+            Logger.log(kind: .error, message: error)
+            // TODO: presenter.showError() ...
+        }
     }
 
     func setModelContext(modelContext: ModelContext) {
