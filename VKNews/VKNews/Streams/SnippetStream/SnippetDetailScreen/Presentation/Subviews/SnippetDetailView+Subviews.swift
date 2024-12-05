@@ -65,6 +65,8 @@ extension SnippetDetailView {
             }
 
             Spacer()
+
+            deleteButton
         }
         .padding(.horizontal)
         .padding(.bottom)
@@ -171,16 +173,31 @@ extension SnippetDetailView {
             )
         }
     }
+
+    var deleteButton: some View {
+        Button {
+            viewModel.didTapDeleteButton()
+        } label: {
+            Image(systemName: "trash")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundStyle(.foreground)
+                .frame(width: 20)
+                .frame(width: 40, height: 40)
+        }
+    }
 }
 
 // MARK: - Preview
 
 #Preview("Mockable") {
+
     NavigationStack {
         SnippetDetailView(
             viewModel: SnippetDetailViewModel(snippet: .mockData)
         )
     }
+    .environment(Coordinator())
 }
 
 // MARK: - Constants
