@@ -56,6 +56,10 @@ private extension YouTubeListView {
     YouTubeListView(viewModel: YouTubeListViewModelMock())
 }
 
+#Preview("No Data") {
+    YouTubeListView(viewModel: YouTubeListViewModelMock(fakeScreenState: .emptyView, delay: 4))
+}
+
 #Preview("Mockable Delay") {
     YouTubeListView(viewModel: YouTubeListViewModelMock(delay: 2))
 }

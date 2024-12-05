@@ -11,10 +11,15 @@ extension YouTubeListView {
 
     @ViewBuilder
     var screenStateView: some View {
-        if viewModel.showLoading {
+        switch viewModel.screenState {
+        case .loading, .initial:
             shimmeringContainer
-        } else {
+        case .emptyView:
+            emptyView
+        case .success:
             contentContainer
+        case let .error(message):
+            errorView(message: message)
         }
     }
 
@@ -24,6 +29,32 @@ extension YouTubeListView {
                 .padding()
                 .background(Constants.bgColor, in: .rect(cornerRadius: 16))
         }
+    }
+
+    var emptyView: some View {
+        ContentUnavailableView.search.background(
+            Constants.bgColor,
+            in: .rect(cornerRadius: 8)
+        )
+        .padding()
+    }
+
+    func errorView(message: String) -> some View {
+        ContentUnavailableView {
+            Text("Error")
+        } description: {
+            Text(message)
+        } actions: {
+            Button("Fetch again") {
+                viewModel.fetchData()
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .background(
+            Constants.bgColor,
+            in: .rect(cornerRadius: 8)
+        )
+        .padding()
     }
 
     @ViewBuilder
@@ -49,6 +80,10 @@ extension YouTubeListView {
 
 #Preview("Mockable") {
     YouTubeListView(viewModel: YouTubeListViewModelMock())
+}
+
+#Preview("No Data") {
+    YouTubeListView(viewModel: YouTubeListViewModelMock(fakeScreenState: .emptyView, delay: 1))
 }
 
 #Preview("Mockable Delay") {
