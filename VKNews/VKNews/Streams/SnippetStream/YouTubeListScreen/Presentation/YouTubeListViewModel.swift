@@ -31,6 +31,7 @@ protocol YouTubeListViewModelProtocol: AnyObject {
     func didEditSnippet(snippet: YouTubeSnippetModel)
     // Actions
     func didTapSnippetCard(snippet: YouTubeSnippetModel)
+    func deleteSnippet(snippet: YouTubeSnippetModel)
 }
 
 // MARK: - YouTubeListViewModel
@@ -130,7 +131,7 @@ extension YouTubeListViewModel {
 
     func addSnippetsFromMemory(_ data: [YouTubeSnippetModel]) {
         mergeSnippets(newSnippets: data)
-        screenState = snippets.isEmpty ? .emptyView : .success
+        screenState = .success
         lastSnippet = data.last
     }
 
@@ -166,6 +167,15 @@ extension YouTubeListViewModel {
 
     func didTapSnippetCard(snippet: YouTubeSnippetModel) {
         router?.openSnippetCard(with: snippet)
+    }
+
+    func deleteSnippet(snippet: YouTubeSnippetModel) {
+        guard let index = (snippets.firstIndex { $0.id == snippet.id }) else {
+            return
+        }
+        snippets.remove(at: index)
+
+        interactor?.deleteSnippetFromMemory(snippet: snippet)
     }
 }
 

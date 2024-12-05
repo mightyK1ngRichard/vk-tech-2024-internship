@@ -80,6 +80,13 @@ extension YouTubeListViewModelMock {
         }
     }
 
+    func deleteSnippet(snippet: YouTubeSnippetModel) {
+        guard let index = (snippets.firstIndex { $0.id == snippet.id }) else {
+            return
+        }
+        snippets.remove(at: index)
+    }
+
     func showError(errorMessage: String) {}
 
     func showSnippets(_ data: [YouTubeSnippetModel], nextPageToken: String?) {}

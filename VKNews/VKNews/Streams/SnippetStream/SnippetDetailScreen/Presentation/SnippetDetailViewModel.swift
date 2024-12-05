@@ -23,6 +23,7 @@ protocol SnippetDetailViewModelProtocol: AnyObject {
     func didTapCancelButton()
     func didTapAlertButton()
     func didTapBackButton()
+    func didTapDeleteButton()
     // Display data
     func showError(errorMessage: String)
     func savedSuccessful(snippetID: String, title: String, description: String)
@@ -103,6 +104,11 @@ extension SnippetDetailViewModel {
     }
 
     func didTapBackButton() {
+        coordinator?.openPreviousScreen()
+    }
+
+    func didTapDeleteButton() {
+        sharedViewModel?.deleteSnippet(snippet: snippet)
         coordinator?.openPreviousScreen()
     }
 }

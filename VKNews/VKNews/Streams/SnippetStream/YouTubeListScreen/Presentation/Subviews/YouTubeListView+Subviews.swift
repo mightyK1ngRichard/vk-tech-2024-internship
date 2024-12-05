@@ -61,7 +61,10 @@ extension YouTubeListView {
     var contentContainer: some View {
         ForEach(viewModel.snippets, id: \.hashValue) { snippet in
             LazyVStack {
-                YouTubeSnippetView(snippet: snippet).onAppear {
+                YouTubeSnippetView(
+                    snippet: snippet,
+                    deleteHandler: viewModel.deleteSnippet
+                ).onAppear {
                     viewModel.loadMoreData(with: snippet)
                 }
                 .onTapGesture {
@@ -71,7 +74,8 @@ extension YouTubeListView {
         }
 
         if viewModel.showMoreLoading {
-            ProgressView().padding()
+            ProgressView()
+                .padding()
         }
     }
 }
