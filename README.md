@@ -41,3 +41,6 @@ View -> ViewModel -> Interactor -> Presenter -> ViewModel -> Router.
 ## Фотографии
 
 <img src="./Preview/Preview.png">
+
+## Видеодемонстрация
+[Ссылка на яндекс диск](https://disk.yandex.ru/d/QU0Sv1klnjYPig)
